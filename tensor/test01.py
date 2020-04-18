@@ -1,4 +1,5 @@
-import tensorflow.compat.v1 as tf
+import tensorflow
+tf = tensorflow.compat.v1
 
 input = [1,2,3,4,5]
 x= tf.placeholder(dtype=tf.float32)
