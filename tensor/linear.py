@@ -17,12 +17,13 @@ cost = tf.reduce_mean(tf.square(H - Y))
 a= tf.Variable(0.01)
 optimizer = tf.train.GradientDescentOptimizer(a)
 train = optimizer.minimize(cost)
-init = tf.global_variables_initializer()
+init = tf.global_variables_initializer() # 변수 담은 값을 
 
 sess = tf.Session()
 sess.run(init)
 for i in range(5001):
     sess.run(train, feed_dict={X: xData, Y: yData})
     if i % 500 == 0:
-        print (i, sess.run(cost, feed_dict={X: xData, Y: yData}), sess.run(W), sess.run(b))
+        print (i, sess.run(W), sess.run(b))
+        print (sess.run(cost, feed_dict={X: xData, Y: yData}))
 print (sess.run(H, feed_dict={X: [9]})) # 9시간 일했을때 매출
