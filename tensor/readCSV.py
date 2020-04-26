@@ -1,7 +1,7 @@
 import csv
 import pydash
 
-with open('data.csv', 'rt', encoding='UTF8') as csvfile:
+with open('tensor/data.csv', 'rt', encoding='UTF8') as csvfile:
     next(csvfile, None) # 첫째줄 건너뛰기
     data = list(csv.reader(csvfile))
 
@@ -10,7 +10,7 @@ priceArr = pydash.collections.map_(data, 1) # 시가
 # dt = pydash.collections.map_(dtArr, lambda a: int(a.replace("/","")) )
 price = pydash.collections.map_(priceArr, lambda a: int(a.replace(",","")) )
 
-price = price[0:15] # 배열 갯수가 많아지면 에러 나는듯
+# price = price[0:50] # 배열 갯수가 많아지면 에러 나는듯
 
 print(price)
 a = []
@@ -36,7 +36,7 @@ Y=tf.placeholder(tf.float32)
 H = W * X + b
 cost = tf.reduce_mean(tf.square(H - Y))
 # 경사하강
-a= tf.Variable(0.01)
+a= tf.Variable(0.0000005)
 optimizer = tf.train.GradientDescentOptimizer(a)
 train = optimizer.minimize(cost)
 init = tf.global_variables_initializer() # 변수 담은 값을 
@@ -45,6 +45,7 @@ sess = tf.Session()
 sess.run(init)
 for i in range(5001):
     sess.run(train, feed_dict={X: xData, Y: yData})
-    # if i % 500 == 0:
-    #     print (i, sess.run(cost, feed_dict={X: xData, Y: yData}), sess.run(W), sess.run(b))
-print (sess.run(H, feed_dict={X: [8]})) # 9시간 일했을때 매출
+    if i % 500 == 0:
+        print (i, sess.run(cost, feed_dict={X: xData, Y: yData}), sess.run(W), sess.run(b))
+
+print (sess.run(H, feed_dict={X: [500]})) # 9시간 일했을때 매출
