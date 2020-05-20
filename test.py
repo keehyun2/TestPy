@@ -1,5 +1,21 @@
 import sys
 import html
+import yaml
+import pymongo
+
+# 몽도 디비 접속
+
+with open('application.yml','r') as f:
+    conf = yaml.load(f)
+
+username = conf['musername']
+password = conf['mpassword']
+
+client = pymongo.MongoClient('mongodb://%s:%s@ds335648.mlab.com:35648/okky_job?retryWrites=false' % (username, password))
+
+db = client.get_default_database()
+jobCollection = db["jobCollection"]
+
 # 필요한 파이썬 라이브러리 
 # # pip3 install selenium beautifulsoup4
 
@@ -15,7 +31,8 @@ options.add_argument('headless')
 
 driver = webdriver.Chrome('chromedriver.exe', chrome_options=options)
 
-driver.get('https://okky.kr/articles/jobs')
+# driver.get('https://okky.kr/articles/jobs')
+driver.get('https://okky.kr/articles/recruit?sort=id&order=desc&filter.act=Y&filter.city=%EC%84%9C%EC%9A%B8&max=20&offset=0')
 
 soup = bs(driver.page_source, "html.parser")
 
@@ -26,9 +43,16 @@ article_list = soup.select("#list-article > div.panel.panel-default > ul > li")
 for article in article_list:
 
   try:
-    title = article.select("div.list-title-wrapper.clearfix > h5")[0].get_text()
-    title = title.strip()
-    print(title)
+    title = article.select("div.list-title-wrapper.clearfix > h5")[0].get_text().strip()
+    print(title)    
+    article_id = article.select("span.article-id")[0].get_text().replace('#','').strip()
+    print(article_id)
+    area = article.select(".list-tag > span")[1].get_text().strip()
+    print(area)
+
+    if jobCollection.find_one({"article_id": article_id}) is None:
+        x = jobCollection.insert_one({ "article_id": article_id, "area": area, "title": title })
+   
   except:
     print("Unexpected error:", sys.exc_info()[0])
     pass
