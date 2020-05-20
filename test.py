@@ -39,6 +39,7 @@ soup = bs(driver.page_source, "html.parser")
 # 목록 태그 수집
 article_list = soup.select("#list-article > div.panel.panel-default > ul > li")
 
+a = []
 # 반복 처리
 for article in article_list:
 
@@ -46,16 +47,21 @@ for article in article_list:
     title = article.select("div.list-title-wrapper.clearfix > h5")[0].get_text().strip()
     print(title)    
     article_id = article.select("span.article-id")[0].get_text().replace('#','').strip()
-    print(article_id)
+    # print(article_id)
     area = article.select(".list-tag > span")[1].get_text().strip()
-    print(area)
+    # print(area)
+    nickname = article.select(".nickname")[0].get_text().strip()
+    timeago = article.select(".timeago")[0].get_text().strip()
 
     if jobCollection.find_one({"article_id": article_id}) is None:
-        x = jobCollection.insert_one({ "article_id": article_id, "area": area, "title": title })
-   
+      a.append({ "article_id": article_id, "area": area, "title": title, "nickname": nickname, "timeago": timeago })
+        
   except:
     print("Unexpected error:", sys.exc_info()[0])
     pass
+
+print(a)
+x = jobCollection.insert_many(a)
 
 driver.quit()
 
