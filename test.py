@@ -22,7 +22,7 @@ def task():
   client = pymongo.MongoClient('mongodb://%s:%s@ds335648.mlab.com:35648/okky_job?retryWrites=false' % (username, password))
 
   db = client.get_default_database()
-  jobCollection = db["jobCollection"]
+  jobs = db["jobs"]
 
   # 필요한 파이썬 라이브러리 
   # # pip3 install pymongo schedule selenium beautifulsoup4
@@ -60,7 +60,7 @@ def task():
       nickname = article.select(".nickname")[0].get_text().strip()
       timeago = article.select(".timeago")[0].get_text().strip()
 
-      if jobCollection.find_one({"article_id": article_id}) is None:
+      if jobs.find_one({"article_id": article_id}) is None:
         a.append({ "article_id": article_id, "area": area, "title": title, "nickname": nickname, "timeago": timeago })
           
     except:
@@ -69,7 +69,7 @@ def task():
 
   print(a)
   if a: # 배열 empty 체크
-    x = jobCollection.insert_many(a)
+    x = jobs.insert_many(a)
 
   driver.quit()
 
