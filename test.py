@@ -2,6 +2,7 @@ import sys
 import html
 import yaml
 import pymongo
+import os
 
 from selenium import webdriver
 from bs4 import BeautifulSoup as bs
@@ -32,9 +33,9 @@ def task():
   options.add_argument('headless')
   driver = None
   if sys.platform == "linux" or sys.platform == "linux2":
-    driver = webdriver.Chrome('chromedriver', options=options)
+    driver = webdriver.Chrome(os.getcwd() + '\chromedriver', options=options)
   elif sys.platform == "win32":
-    driver = webdriver.Chrome('chromedriver.exe', options=options)
+    driver = webdriver.Chrome(os.getcwd() + '\chromedriver.exe', options=options)
   # driver = webdriver.PhantomJS('phantomjs-2.1.1-windows/bin/phantomjs.exe') # deprecate 됨
 
   # driver.get('https://okky.kr/articles/jobs')
