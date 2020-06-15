@@ -29,12 +29,14 @@ def task():
   # 크롬 드라이버 다운로드 - https://chromedriver.chromium.org/downloads
   # 크롬버전 확인 - chrome://settings/help
 
-  options = webdriver.ChromeOptions()
-  options.add_argument('headless')
+
   driver = None
   if sys.platform == "linux" or sys.platform == "linux2":
-    driver = webdriver.Chrome(os.getcwd() + '\chromedriver', options=options)
+    # driver = webdriver.Chrome(os.getcwd() + '\chromedriver', options=options)
+    driver = webdriver.PhantomJS('phantomjs-2.1.1-linux-x86_64\bin\phantomjs')
   elif sys.platform == "win32":
+    options = webdriver.ChromeOptions()
+    options.add_argument('headless')
     driver = webdriver.Chrome(os.getcwd() + '\chromedriver.exe', options=options)
   # driver = webdriver.PhantomJS('phantomjs-2.1.1-windows/bin/phantomjs.exe') # deprecate 됨
 
