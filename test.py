@@ -2,19 +2,16 @@ import sys
 import html
 import yaml
 import pymongo
-import schedule
-import time
 
 from selenium import webdriver
 from bs4 import BeautifulSoup as bs
-
 
 def task():
 
   # 몽도 디비 접속
 
   with open('application.yml','r') as f:
-      conf = yaml.load(f)
+      conf = yaml.load(f, Loader=yaml.FullLoader)
 
   username = conf['musername']
   password = conf['mpassword']
@@ -25,18 +22,20 @@ def task():
   jobs = db["jobs"]
 
   # 필요한 파이썬 라이브러리 
-  # # pip3 install pymongo schedule selenium beautifulsoup4
+  # # pip3 install pymongo schedule selenium beautifulsoup4 pyyaml
 
   # chromedriver 는 설치된 크롬에 호환되는 버전을 받아서 사용할것
   # 크롬 드라이버 다운로드 - https://chromedriver.chromium.org/downloads
   # 크롬버전 확인 - chrome://settings/help
 
-  # options = webdriver.ChromeOptions()
-  # options.add_argument('headless')
-
-  # driver = webdriver.Chrome('chromedriver.exe', chrome_options=options)
-
-  driver = webdriver.PhantomJS('C:/dev/phantomjs-2.1.1-windows/bin/phantomjs.exe')
+  options = webdriver.ChromeOptions()
+  options.add_argument('headless')
+  driver = None
+  if sys.platform == "linux" or sys.platform == "linux2":
+    driver = webdriver.Chrome('chromedriver', options=options)
+  elif sys.platform == "win32":
+    driver = webdriver.Chrome('chromedriver.exe', options=options)
+  # driver = webdriver.PhantomJS('phantomjs-2.1.1-windows/bin/phantomjs.exe') # deprecate 됨
 
   # driver.get('https://okky.kr/articles/jobs')
   driver.get('https://okky.kr/articles/recruit?sort=id&order=desc&filter.act=Y&filter.city=%EC%84%9C%EC%9A%B8&max=20&offset=0')
@@ -73,12 +72,14 @@ def task():
 
   driver.quit()
 
+# import schedule
+# import time
 
 # 300초에 한번씩 실행
-schedule.every(300).seconds.do(task)
+# schedule.every(300).seconds.do(task)
 
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+# while True:
+#     schedule.run_pending()
+#     time.sleep(1)
 
-# task()
+task()
