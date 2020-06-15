@@ -7,7 +7,7 @@ import os
 from selenium import webdriver
 from bs4 import BeautifulSoup as bs
 
-def task():
+def jobsCrawl(event, context):
 
   # 몽도 디비 접속
 
@@ -33,7 +33,7 @@ def task():
   driver = None
   if sys.platform == "linux" or sys.platform == "linux2":
     # driver = webdriver.Chrome(os.getcwd() + '\chromedriver', options=options)
-    driver = webdriver.PhantomJS('phantomjs-2.1.1-linux-x86_64\bin\phantomjs')
+    driver = webdriver.PhantomJS(service_log_path='/var/log/phantomjs/ghostdriver.log')
   elif sys.platform == "win32":
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
@@ -79,10 +79,10 @@ def task():
 # import time
 
 # 300초에 한번씩 실행
-# schedule.every(300).seconds.do(task)
+# schedule.every(300).seconds.do(jobsCrawl)
 
 # while True:
 #     schedule.run_pending()
 #     time.sleep(1)
 
-task()
+# jobsCrawl()
